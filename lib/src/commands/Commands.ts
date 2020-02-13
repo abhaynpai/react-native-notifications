@@ -89,7 +89,7 @@ export class Commands {
   }
 
   public createChannel(id: string, name: string, importance = ChannelImportance.IMPORTANCE_DEFAULT, description = "Default Channel") {
-    this.nativeCommandsSender.createChannel({
+    return this.nativeCommandsSender.createChannel({
       id,
       name,
       importance,
