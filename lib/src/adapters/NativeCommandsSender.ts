@@ -3,6 +3,7 @@ import { Notification } from '../DTO/Notification';
 import { NotificationCompletion } from '../interfaces/NotificationCompletion';
 import { NotificationPermissions } from '../interfaces/NotificationPermissions';
 import { NotificationCategory } from '../interfaces/NotificationCategory';
+import { NotificationChannelAndroid } from '../interfaces/NotificationChannelsAndroid';
 
 interface NativeCommandsModule {
   getInitialNotification(): Promise<Object>;
@@ -23,6 +24,7 @@ interface NativeCommandsModule {
   setCategories(categories: [NotificationCategory?]): void;
   finishPresentingNotification(notificationId: string, callback: NotificationCompletion): void;
   finishHandlingAction(notificationId: string): void;
+  createChannel(channel: NotificationChannelAndroid): Promise<boolean>;
 }
 
 export class NativeCommandsSender {
@@ -38,7 +40,7 @@ export class NativeCommandsSender {
   getInitialNotification(): Promise<Object> {
     return this.nativeCommandsModule.getInitialNotification();
   }
-  
+
   requestPermissions() {
     return this.nativeCommandsModule.requestPermissions();
   }
@@ -101,5 +103,9 @@ export class NativeCommandsSender {
 
   finishHandlingAction(notificationId: string): void {
     this.nativeCommandsModule.finishHandlingAction(notificationId);
+  }
+
+  createChannel(channel: NotificationChannelAndroid): Promise<boolean> {
+    return this.nativeCommandsModule.createChannel(channel);
   }
 }

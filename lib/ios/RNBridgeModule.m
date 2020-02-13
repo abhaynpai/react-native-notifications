@@ -44,6 +44,10 @@ RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve reject:
     [_commandsHandler getInitialNotification:resolve reject:reject];
 }
 
+RCT_EXPORT_METHOD(createChannel:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [_commandsHandler createChannel:resolve reject:reject];
+}
+
 RCT_EXPORT_METHOD(finishHandlingAction:(NSString *)completionKey) {
     [_commandsHandler finishHandlingAction:completionKey];
 }

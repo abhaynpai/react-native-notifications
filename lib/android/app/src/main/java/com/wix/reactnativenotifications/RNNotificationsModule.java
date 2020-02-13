@@ -2,8 +2,11 @@ package com.wix.reactnativenotifications;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -108,9 +111,9 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void setCategories(ReadableArray categories) {
-    
+
     }
-    
+
     public void cancelDeliveredNotification(String tag, int notificationId) {
         IPushNotificationsDrawer notificationsDrawer = PushNotificationsDrawer.get(getReactApplicationContext().getApplicationContext());
         notificationsDrawer.onNotificationClearRequest(tag, notificationId);
@@ -122,9 +125,43 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
         promise.resolve(new Boolean(hasPermission));
     }
 
-    @ReactMethod void removeAllDeliveredNotifications() {
+    @ReactMethod
+    void removeAllDeliveredNotifications() {
         IPushNotificationsDrawer notificationsDrawer = PushNotificationsDrawer.get(getReactApplicationContext().getApplicationContext());
         notificationsDrawer.onAllNotificationsClearRequest();
+    }
+
+    /**
+     * Create notification channel for Android O and above
+     *
+     * @param channelMap - Readable Map containing { id, name, importance, description }
+     * @param promise    - To resolve with a boolean value
+     */
+    @ReactMethod
+    public void createChannel(ReadableMap channelMap, Promise promise) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            promise.resolve(true);
+            return;
+        }
+
+        try {
+            ReactApplicationContext reactContext = getReactApplicationContext();
+            String id = channelMap.getString("id");
+            String name = channelMap.getString("name");
+            int importance = channelMap.getInt("importance");
+            String description = channelMap.getString("description");
+
+            NotificationChannel channel = new NotificationChannel(id, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+
+            promise.resolve(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            promise.reject(e);
+        }
     }
 
     protected void startFcmIntentService(String extraFlag) {

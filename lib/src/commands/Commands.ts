@@ -3,6 +3,7 @@ import { NativeCommandsSender } from '../adapters/NativeCommandsSender';
 import { Notification } from '../DTO/Notification';
 import { NotificationCategory } from '../interfaces/NotificationCategory';
 import { NotificationPermissions } from '../interfaces/NotificationPermissions';
+import { ChannelImportance } from '../interfaces/NotificationChannelsAndroid';
 import { UniqueIdProvider } from '../adapters/UniqueIdProvider';
 import { NotificationFactory } from '../DTO/NotificationFactory';
 
@@ -85,5 +86,14 @@ export class Commands {
 
   public refreshToken() {
     this.nativeCommandsSender.refreshToken();
+  }
+
+  public createChannel(id: string, name: string, importance = ChannelImportance.IMPORTANCE_DEFAULT, description = "Default Channel") {
+    this.nativeCommandsSender.createChannel({
+      id,
+      name,
+      importance,
+      description,
+    });
   }
 }
